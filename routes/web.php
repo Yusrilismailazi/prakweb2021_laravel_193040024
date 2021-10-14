@@ -1,7 +1,11 @@
 <?php
 
+use App\Models\Post;
 use Illuminate\Support\Facades\Route;
-use PhpParser\Node\Expr\PostDec;
+use App\Http\Controllers\PostController;
+
+use App\Models\Category;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -16,76 +20,37 @@ use PhpParser\Node\Expr\PostDec;
 
 Route::get('/', function () {
     return view('home', [
-        "title" => "Home"
+        "tittle" => "Home"
     ]);
 });
 
 Route::get('/about', function () {
-    return view('about', [ 
-        "title" => "About",
+    return view('about', [
+        "tittle" => "About",
         "name" => "Yusril Ismail Azi",
-        "email" => "Aziyusril30@gamil.com",
+        "email" => "aziyusril30@gmail.com",
         "image" => "aji.jpg"
-
-]);
-
-});
-
-
-
-Route::get('/blog', function () {
-    $blog_posts = [
-        [
-            "title" => "Judul Post Pertama",
-            "slug" => "judul-post-pertama" ,
-            "author" => "Yusril Ismail Azi",
-            "body" => "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores quo veritatis eos ipsam, nihil qui dolorem veniam, aliquam delectus tempore voluptatem repellendus provident, ea vel? Nesciunt nulla, assumenda culpa vero et illum dicta magnam eum minima sed eveniet. Placeat dolores non odio soluta quibusdam? Ut dolorum voluptate incidunt omnis sequi error aut dolores vitae tempore adipisci nostrum, ex deserunt provident repellendus, qui explicabo. Harum ea perspiciatis labore magni aspernatur, nemo blanditiis aut deserunt ullam voluptatem voluptates amet officia aliquam obcaecati?"
-        ],
-        [
-            "title" => "Judul Post Kedua",
-            "slug" => "judul-post-pertama" ,
-            "author" => "Adnan pidaus",
-            "body" => "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores quo veritatis eos ipsam, nihil qui dolorem veniam, aliquam delectus tempore voluptatem repellendus provident, ea vel? Nesciunt nulla, assumenda culpa vero et illum dicta magnam eum minima sed eveniet. Placeat dolores non odio soluta quibusdam? Ut dolorum voluptate incidunt omnis sequi error aut dolores vitae tempore adipisci nostrum, ex deserunt provident repellendus, qui explicabo. Harum ea perspiciatis labore magni aspernatur, nemo blanditiis aut deserunt ullam voluptatem voluptates amet officia aliquam obcaecati?"
-        ],
-    
-    ];
-    return view('posts', [
-        "title" => "Posts",
-        "posts" => $blog_posts
-
     ]);
 });
 
-//halaman single post
-Route :: get('posts/{slug}' , function($slug) {
-    $blog_posts = [
-        [
-            "title" => "Judul Post Pertama",
-            "slug" => "judul-post-pertama" ,
-            "author" => "Yusril Ismail Azi",
-            "body" => "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores quo veritatis eos ipsam, nihil qui dolorem veniam, aliquam delectus tempore voluptatem repellendus provident, ea vel? Nesciunt nulla, assumenda culpa vero et illum dicta magnam eum minima sed eveniet. Placeat dolores non odio soluta quibusdam? Ut dolorum voluptate incidunt omnis sequi error aut dolores vitae tempore adipisci nostrum, ex deserunt provident repellendus, qui explicabo. Harum ea perspiciatis labore magni aspernatur, nemo blanditiis aut deserunt ullam voluptatem voluptates amet officia aliquam obcaecati?"
-        ],
-        [
-            "title" => "Judul Post Kedua",
-            "slug" => "judul-post-pertama" ,
-            "author" => "Adnan pidaus",
-            "body" => "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores quo veritatis eos ipsam, nihil qui dolorem veniam, aliquam delectus tempore voluptatem repellendus provident, ea vel? Nesciunt nulla, assumenda culpa vero et illum dicta magnam eum minima sed eveniet. Placeat dolores non odio soluta quibusdam? Ut dolorum voluptate incidunt omnis sequi error aut dolores vitae tempore adipisci nostrum, ex deserunt provident repellendus, qui explicabo. Harum ea perspiciatis labore magni aspernatur, nemo blanditiis aut deserunt ullam voluptatem voluptates amet officia aliquam obcaecati?"
-        ],
-    
-    ];
 
-   $new_post = [];
 
-    foreach ($blog_posts as $post) {
-        if($post["slug"] === $slug) {
-            $new_post = $post;
+Route::get('/blog', [PostController::class, 'index']);
 
-        }
-    }
-    return view('post' , [
-        "title"  => "Single Post",
-        "post" => $new_post 
+// halaman single post
+Route::get('/posts/{post:slug}', [PostController::class, 'show']);
+
+Route::get('/categories', function(){
+    return view('categories', [
+        'tittle' => 'Post Categories',
+        'categories' => Category::all()
     ]);
-
 });
 
+Route::get('/categories/{category:slug}',function(Category $category){
+    return view('category', [
+        'tittle' => $category->name,
+        'posts' => $category->posts,
+        'category' => $category->name
+    ]);
+});
