@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Models\Category;
 
-use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\LoginController;
@@ -21,37 +21,39 @@ use App\Http\Controllers\RegisterController;
 
 Route::get('/', function () {
     return view('home', [
-        "tittle" => "Home",
-        "active" => "home"
+        "title" => "Home",
+        'active' => 'home'
     ]);
 });
 
 Route::get('/about', function () {
     return view('about', [
-        'tittle' => 'About',
+        "title" => "About",
         'active' => 'about',
-        'name' => 'Yusril Ismail Azi',
-        'email' => 'aziyusril30@gmail.com',
-        'image' => 'aji.jpg'
+        "name" => "Muhammad Alwi Ramadhan",
+        "email" => "alwi.romadhon@gmail.com",
+        "image" => "alwi.jpeg"
     ]);
 });
 
+Route::get('/posts', [PostController::class, 'index']);
+Route::get('posts/{post:slug}', [PostController::class, 'show']);
 
-
-Route::get('/blog', [PostController::class, 'index']);
-
-// halaman single post
-Route::get('/posts/{post:slug}', [PostController::class, 'show']);
-
-Route::get('/categories', function(){
+Route::get('/categories', function () {
     return view('categories', [
-        'tittle' => 'Post Categories',
+        'title' => 'Post Categories',
         'active' => 'categories',
         'categories' => Category::all()
     ]);
 });
 
-Route::get('/login', [LoginController::class, 'index']);
-
-Route::get('/register', [RegisterController::class, 'index']);
+//Login
+Route::get('/login', [LoginController::class, 'index'])->name('login')->middleware('guest');
+Route::post('/login', [LoginController::class, 'authenticate']);
+Route::post('/logout', [LoginController::class, 'logout']);
+//Register
+Route::get('/register', [RegisterController::class, 'index'])->middleware('guest');
 Route::post('/register', [RegisterController::class, 'store']);
+//Dashboard
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth');
+
