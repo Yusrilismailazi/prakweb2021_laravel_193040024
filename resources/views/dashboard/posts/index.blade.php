@@ -5,6 +5,12 @@
   <h1 class="h2">My Posts</h1>
 </div>
 
+@if (section()->has('success'))
+  <div class="alert alert-success" role="alert">
+    {{ section('succes')}}
+  </div>   
+@endif
+
 <div class="table-responsive col-lg-8">
   <a href="/dashboard/posts/create" class="btn btn-primary mb-3">Creat new post</a>
     <table class="table table-striped table-sm">
